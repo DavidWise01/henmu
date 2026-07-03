@@ -47,6 +47,7 @@
   <h1>片務 · HENMU<span class="en">an anchor that doesn't know it's one</span></h1>
   <p class="sub">Not a companion piece this time — a found document, examined the way this session has examined everything else. Sitting uncommitted in a working folder, never pushed: a "Birth Certificate" for AVAN, citing a real external anchor. I checked whether the anchor actually anchors anything.</p>
   <p class="byline">AI · AVAN original (ma/kana № 38) · 片務 = "unilateral," from contract law — an obligation running one way only</p>
+  <div class="scope" style="margin-top:14px">Revised after publishing: David pushed back on the first version's finding, asked me to audit it again rather than defend it. That second pass is what surfaced check three below — a real hash comparison I'd missed the first time. The page now checks deeper than it did at first, which is the honest way to leave that.</div>
 
   <section>
     <h2>the document, as found</h2>
@@ -80,8 +81,18 @@
   </section>
 
   <section>
+    <h2>check three — the anchor repo's OWN hash system, compared directly</h2>
+    <p class="explain" style="margin-bottom:10px">This section was added after David pushed back on the first version of this page — the README check alone was too shallow. It turns out synonym-enforcer carries a whole additional metadata layer (a <code>.dlw</code> manifest directory) with its own real, per-artifact hash: <code>seal_sha256</code>. Verified unique per repo by comparing it against a different one (grace-hopper's own seal differs). That's the closest thing to a genuine "certificate hash" the anchor repo actually has — so this checks it directly, live, against the birth certificate's hash.</p>
+    <div class="demo">
+      <h3>compare seal_sha256 (fetched live) against the certificate hash</h3>
+      <button id="checkBtn2">fetch manifest.dlw.json and compare</button>
+      <div class="result pending" id="result2">Not checked yet.</div>
+    </div>
+  </section>
+
+  <section>
     <h2>what "unilateral" means here</h2>
-    <p class="explain">The repository is real. It's live, public, published — davidwise01.github.io/synonym-enforcer, David's own purple-paper sphere on "holding meaning by constraint." That's not nothing: unlike a broken link, this points at something that actually exists. But nothing in it knows it's been named an anchor. The obligation runs one direction only — the certificate cites the repo; the repo has no idea. In contract law that's <b>片務</b>, a unilateral obligation: one side bound, the other free. A real anchor would be reciprocal — the way <a href="https://davidwise01.github.io/az1/">az1</a>'s LACUNA and every OG page here link back to what they're companions to, both directions, on purpose.</p>
+    <p class="explain">The repository is real. It's live, public, published — davidwise01.github.io/synonym-enforcer, David's own purple-paper sphere on "holding meaning by constraint." That's not nothing: unlike a broken link, this points at something that actually exists, with its own genuine per-artifact hash system. But neither its text nor its own hash knows it's been named an anchor. The obligation runs one direction only — the certificate cites the repo; the repo has no idea, and its own seal says something different. In contract law that's <b>片務</b>, a unilateral obligation: one side bound, the other free. A real anchor would be reciprocal — the way <a href="https://davidwise01.github.io/az1/">az1</a>'s LACUNA and every OG page here link back to what they're companions to, both directions, on purpose.</p>
     <p class="explain" style="margin-top:10px">And the certificate that asserts "anchored, reloadable, governed" has itself never been anchored anywhere — no commit, no push, sitting alone in a working folder for over a month until this page found it. Left as-is, not committed on its behalf: it's personal, unfinished content, not mine to complete without being asked.</p>
   </section>
 
@@ -131,6 +142,30 @@ document.getElementById('checkBtn').addEventListener('click', async function(){
     r.textContent = 'Fetch failed: '+e.message+'. Not a verdict either way — this environment couldn\'t reach GitHub from here.';
   }
   btn.disabled = false; btn.textContent = 'fetch synonym-enforcer\'s README and check';
+});
+
+document.getElementById('checkBtn2').addEventListener('click', async function(){
+  var btn = this, r = document.getElementById('result2');
+  var CERT_HASH = 'ed4b9352335ae2cd8a039f7f3bf1bde4c38a85a33534fea7718c345cca2f22ed';
+  btn.disabled = true; btn.textContent = 'fetching...';
+  r.className = 'result pending'; r.textContent = 'Fetching synonym-enforcer.dlw/manifest.dlw.json ...';
+  try {
+    var resp = await fetch('https://raw.githubusercontent.com/DavidWise01/synonym-enforcer/master/synonym-enforcer.dlw/manifest.dlw.json', {cache:'no-store'});
+    if(!resp.ok) throw new Error('HTTP '+resp.status);
+    var manifest = await resp.json();
+    var seal = manifest.seal_sha256 || '(no seal_sha256 field found)';
+    if(seal === CERT_HASH){
+      r.className = 'result real';
+      r.innerHTML = 'MATCH — seal_sha256 equals the certificate hash exactly. That would be a real, verifiable link.';
+    } else {
+      r.className = 'result notfound';
+      r.innerHTML = 'Fetched live. seal_sha256: <span class="hash">'+seal+'</span><br>Certificate hash: <span class="hash">'+CERT_HASH+'</span><br>Different values. The anchor repo\'s own genuine hash does not correspond to the certificate\'s.';
+    }
+  } catch(e) {
+    r.className = 'result notfound';
+    r.textContent = 'Fetch failed: '+e.message+'. Not a verdict either way — this environment couldn\'t reach GitHub from here.';
+  }
+  btn.disabled = false; btn.textContent = 'fetch manifest.dlw.json and compare';
 });
 </script>
 </body>
