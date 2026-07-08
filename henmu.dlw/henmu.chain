@@ -4,6 +4,6 @@ slug  : henmu
 seal  : d5f0dcca2d5485d1e637faae14c45f4a4ad4d16e06c20b2d2809532734913f34
 prev  : 9d26b25838aa418c9f796c327a542cd29d21548cec9bcc3dddb6bcc22add80b3
 link  : 971e7b2fb16e2d8eeab2fc38bc76bb0a2e3621f6d25813b999f8fc92f608cb02
-head  : 3447d3a0533aaf1e29a8bdc67a9774884fb3ae9dbc8a17064b7a008ca3c4ec90
+head  : 13f9ace173ef2e60af38912ba329b4afcb5a38b84a0e4495e8d30327f8c99cc2
 
 — the tether: link = sha256(index|slug|seal|prev). the chain head commits to the whole corpus.
